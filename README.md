@@ -1,4 +1,5 @@
 # DESPITE
+[![CircleCI](https://circleci.com/gh/kindlyops/despite.svg?style=svg)](https://circleci.com/gh/kindlyops/despite)
 
 ## building
 
