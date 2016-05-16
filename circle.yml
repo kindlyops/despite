@@ -11,7 +11,7 @@ dependencies:
     - GOOS=linux GOARCH=arm gb build all
     - GOOS=darwin gb build all
     - GOOS=windows gb build all
-    - mv bin/* $CIRCLE_ARTIFACTS
+    - cp bin/* $CIRCLE_ARTIFACTS
     - docker build -t kindlyops/despite .
 
 test:
