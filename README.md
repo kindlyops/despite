@@ -11,6 +11,7 @@ You will need go 1.6 or later and the gb tool installed.
 
 ## TODO
 
- * [] learn how to make unit tests
- * [] set up circleci
- * [] set up FROM scratch dockerfile as shown at https://github.com/kelseyhightower/contributors
+* [ ] learn how to make unit tests
+* [ ] set up circleci
+* [ ] set up FROM scratch dockerfile as shown at https://github.com/kelseyhightower/contributors
+* [ ] turn on slack integrations
