@@ -7,8 +7,12 @@ dependencies:
     # this project uses the gb tool instead of `go build`
     - go get github.com/constabulary/gb/...
     - go get github.com/tcnksm/ghr
-    - gb build all
+    - GOOS=linux gb build all
+    - GOOS=linux GOARCH=arm go build all
+    - GOOS=darwin gb build all
+    - GOOS=windows gb build all
     - docker build -t kindlyops/despite .
+    - mv bin/* $CIRCLE_ARTIFACTS
 
 test:
   override:

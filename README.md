@@ -12,6 +12,10 @@ You will need go 1.6 or later and the gb tool installed.
 ## TODO
 
 * [ ] learn how to make unit tests
-* [ ] set up circleci
-* [ ] set up FROM scratch dockerfile as shown at https://github.com/kelseyhightower/contributors
+* [ ] set up circleci to publish docker image to registry
+* [ ] set up circleci to publish binaries to github releases
+* [ ] set up cross compiling
+* [ ] set up a homebrew tap to make this easy to install on OSX
+* [ ] set up bash autocompletion
+* [ ] add notes on running via docker image
 * [ ] turn on slack integrations
