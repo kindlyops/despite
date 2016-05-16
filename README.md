@@ -18,6 +18,24 @@ You will need go 1.6 or later and the gb tool installed.
 * [ ] set up a homebrew tap to make this easy to install on OSX
 * [ ] set up bash autocompletion
 * [ ] add notes on running via docker image
-* [ ] turn on slack integrations
 * [ ] add a Makefile that automatically gets the dependencies
       via homebrew or apt and go get, and has a make test target
+* [ ] add docker compose support
+
+## http server experiment
+
+* [ ] add a serve command that runs HTTP server using
+      https://github.com/gocraft/web and exposes commands
+* [ ] instrument the http server with https://github.com/gocraft/health
+* [ ] experiment with calling into PostgreSQL
+      http://www.cybertec.at/2016/05/beating-uber-with-a-postgresql-prototype/
+      https://github.com/gocraft/dbr
+* [ ] publish application metrics into prometheus
+      https://prometheus.io/
+* [ ] visualize application metrics with grafana
+      https://prometheus.io/docs/visualization/grafana/
+* [ ] set up vagrant with mesos-playa and some frameworks
+  * kubernetes
+  * chronos
+  * marathon
+* [ ] set up vagrant with CoreOS and kubernetes
