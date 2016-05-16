@@ -1,0 +1,9 @@
+.git
+.go
+LICENSE
+README.md
+bin
+vendor
+CODE_OF_CONDUCT.md
+src
+pkg

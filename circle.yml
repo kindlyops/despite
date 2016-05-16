@@ -1,0 +1,20 @@
+machine:
+  services:
+    - docker
+
+dependencies:
+  override:
+    # this project uses the gb tool instead of `go build`
+    - go get github.com/constabulary/gb/...
+    - go get github.com/tcnksm/ghr
+    - gb build all
+    - docker build -t kindlyops/despite .
+
+test:
+  override:
+    # this project uses the gb tool instead of `go test`
+    - gb test
+
+# TODO push the docker image
+# TODO cross compile and upload releases to github
+# https://medium.com/@jgautheron/publish-your-golang-binaries-in-github-with-circleci-e0b64cb21bf8#.unwbi7kbj
