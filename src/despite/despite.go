@@ -28,38 +28,41 @@ var dburi string
 
 func tableSize(ctx *cli.Context) error {
 	var (
-		size string
-		name string
+		tableSize string
+		totalSize string
+		indexSize string
+		name      string
 	)
 	db, err := sql.Open("postgres", dburi)
 	if err != nil {
 		return cli.NewExitError(fmt.Sprintf("%s", err), 1)
 	}
-	// much love for heroku data team, who originally published this
-	// query in pg-extras
+	// much love for heroku data team, who originally published in pg-extras
 	// https://github.com/heroku/heroku-pg-extras/blob/master/lib/heroku/command/pg.rb
 	sql := `SELECT c.relname AS name,
-    pg_size_pretty(pg_table_size(c.oid)) AS size
+    pg_size_pretty(pg_total_relation_size(c.oid)) as total_size,
+    pg_size_pretty(pg_table_size(c.oid)) AS table_size,
+    pg_size_pretty(pg_indexes_size(c.oid)) AS index_size
   FROM pg_class c
   LEFT JOIN pg_namespace n ON (n.oid = c.relnamespace)
   WHERE n.nspname NOT IN ('pg_catalog', 'information_schema')
   AND n.nspname !~ '^pg_toast'
   AND c.relkind='r'
-  ORDER BY pg_table_size(c.oid) DESC`
+  ORDER BY pg_total_relation_size(c.oid) DESC`
 	rows, err := db.Query(sql)
 	if err != nil {
 		return cli.NewExitError(fmt.Sprintf("%s", err), 1)
 	}
 	defer rows.Close()
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Name", "Size"})
+	table.SetHeader([]string{"Name", "TotalSize", "TableSize", "IndexSize"})
 	table.SetBorder(false)
 	for rows.Next() {
-		err := rows.Scan(&name, &size)
+		err := rows.Scan(&name, &totalSize, &tableSize, &indexSize)
 		if err != nil {
 			return cli.NewExitError(fmt.Sprintf("%s", err), 1)
 		}
-		table.Append([]string{name, size})
+		table.Append([]string{name, totalSize, tableSize, indexSize})
 	}
 	table.Render()
 	return nil
