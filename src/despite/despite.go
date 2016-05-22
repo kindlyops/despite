@@ -1,4 +1,4 @@
-//usr/bin/env go run $0 $@; exit $?
+//usr/bin/env go run $0 "$@"; exit $?
 // Copyright 2016 Kindly Ops, LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,13 +15,17 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"os"
 
 	"github.com/codegangsta/cli"
+	_ "github.com/lib/pq"
+	"github.com/olekukonko/tablewriter"
 )
 
 func main() {
+	var dburi string
 	app := cli.NewApp()
 	app.Name = "despite"
 	app.Usage = "One day this should do something"
@@ -32,6 +36,13 @@ func main() {
 			Value:  "无",
 			Usage:  "verbosity of output",
 			EnvVar: "DESPITE_VERBOSITY",
+		},
+		cli.StringFlag{
+			Name:        "dburi, D",
+			Value:       "localhost/postgres",
+			Usage:       "postgres://dbuser:dbpassword@hostname/dbname?sslmode=disable",
+			EnvVar:      "DESPITE_DBURI",
+			Destination: &dburi,
 		},
 		cli.IntFlag{
 			Name:   "exit, e",
@@ -44,6 +55,51 @@ func main() {
 		cli.Author{
 			Name:  "Elliot Murphy",
 			Email: "elliot@kindlyops.com",
+		},
+	}
+	app.Commands = []cli.Command{
+		{
+			Name:    "pg:table-size",
+			Aliases: []string{"table-size"},
+			Usage:   "print table sizes in descending order",
+			Action: func(ctx *cli.Context) error {
+				var (
+					size string
+					name string
+				)
+				fmt.Println(dburi)
+				db, err := sql.Open("postgres", dburi)
+				if err != nil {
+					return cli.NewExitError(fmt.Sprintf("%s", err), 1)
+				}
+				// much love for heroku data team, who originally published this
+				// query in pg-extras
+				// https://github.com/heroku/heroku-pg-extras/blob/master/lib/heroku/command/pg.rb
+				sql := `SELECT c.relname AS name,
+          pg_size_pretty(pg_table_size(c.oid)) AS size
+        FROM pg_class c
+        LEFT JOIN pg_namespace n ON (n.oid = c.relnamespace)
+        WHERE n.nspname NOT IN ('pg_catalog', 'information_schema')
+        AND n.nspname !~ '^pg_toast'
+        AND c.relkind='r'
+        ORDER BY pg_table_size(c.oid) DESC`
+				rows, err := db.Query(sql)
+				if err != nil {
+					return cli.NewExitError(fmt.Sprintf("%s", err), 1)
+				}
+				defer rows.Close()
+				table := tablewriter.NewWriter(os.Stdout)
+				table.SetHeader([]string{"Name", "Size"})
+				for rows.Next() {
+					err := rows.Scan(&name, &size)
+					if err != nil {
+						return cli.NewExitError(fmt.Sprintf("%s", err), 1)
+					}
+					table.Append([]string{name, size})
+				}
+				table.Render()
+				return nil
+			},
 		},
 	}
 	app.Action = func(ctx *cli.Context) error {
