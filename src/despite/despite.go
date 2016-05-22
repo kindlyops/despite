@@ -39,7 +39,7 @@ func main() {
 		},
 		cli.StringFlag{
 			Name:        "dburi, D",
-			Value:       "localhost/postgres",
+			Value:       "postgres://localhost/postgres?sslmode=disable",
 			Usage:       "postgres://dbuser:dbpassword@hostname/dbname?sslmode=disable",
 			EnvVar:      "DESPITE_DBURI",
 			Destination: &dburi,
@@ -67,7 +67,6 @@ func main() {
 					size string
 					name string
 				)
-				fmt.Println(dburi)
 				db, err := sql.Open("postgres", dburi)
 				if err != nil {
 					return cli.NewExitError(fmt.Sprintf("%s", err), 1)
