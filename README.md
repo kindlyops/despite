@@ -51,7 +51,6 @@ Once posgres is available, run tests using
 * [ ] instrument the http server with https://github.com/gocraft/health
 * [ ] experiment with calling into PostgreSQL
       http://www.cybertec.at/2016/05/beating-uber-with-a-postgresql-prototype/
-      https://github.com/gocraft/dbr
 * [ ] publish application metrics into prometheus
       https://prometheus.io/
 * [ ] visualize application metrics with grafana

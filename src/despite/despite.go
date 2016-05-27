@@ -115,7 +115,7 @@ func main() {
 			Name:    "pg:table-size",
 			Aliases: []string{"table-size"},
 			Usage:   "print table sizes in descending order",
-			Action:  tableSize,
+			Action:  tableSizeCmd,
 		},
 	}
 	app.Action = func(ctx *cli.Context) error {
