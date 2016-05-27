@@ -17,6 +17,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"io"
 	"os"
 
 	"github.com/codegangsta/cli"
@@ -26,7 +27,7 @@ import (
 
 var dburi string
 
-func tableSize(ctx *cli.Context) error {
+func tableSize(output io.Writer) error {
 	var (
 		tableSize string
 		totalSize string
@@ -35,8 +36,9 @@ func tableSize(ctx *cli.Context) error {
 	)
 	db, err := sql.Open("postgres", dburi)
 	if err != nil {
-		return cli.NewExitError(fmt.Sprintf("%s", err), 1)
+		return err
 	}
+	defer db.Close()
 	// much love for heroku data team, who originally published in pg-extras
 	// https://github.com/heroku/heroku-pg-extras/blob/master/lib/heroku/command/pg.rb
 	sql := `SELECT c.relname AS name,
@@ -51,20 +53,28 @@ func tableSize(ctx *cli.Context) error {
   ORDER BY pg_total_relation_size(c.oid) DESC`
 	rows, err := db.Query(sql)
 	if err != nil {
-		return cli.NewExitError(fmt.Sprintf("%s", err), 1)
+		return err
 	}
 	defer rows.Close()
-	table := tablewriter.NewWriter(os.Stdout)
+	table := tablewriter.NewWriter(output)
 	table.SetHeader([]string{"Name", "TotalSize", "TableSize", "IndexSize"})
 	table.SetBorder(false)
 	for rows.Next() {
 		err := rows.Scan(&name, &totalSize, &tableSize, &indexSize)
 		if err != nil {
-			return cli.NewExitError(fmt.Sprintf("%s", err), 1)
+			return err
 		}
 		table.Append([]string{name, totalSize, tableSize, indexSize})
 	}
 	table.Render()
+	return nil
+}
+
+func tableSizeCmd(ctx *cli.Context) error {
+	err := tableSize(os.Stdout)
+	if err != nil {
+		return cli.NewExitError(fmt.Sprintf("%s", err), 1)
+	}
 	return nil
 }
 
