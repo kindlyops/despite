@@ -10,7 +10,7 @@ import (
 
 func TestTableSizesCommand(t *testing.T) {
 	saved := dburi
-	dburi = "postgres://localhost/postgres?sslmode=disable"
+	dburi = "postgres://postgres@db/postgres?sslmode=disable"
 	var buf bytes.Buffer
 	db, err := sql.Open("postgres", dburi)
 	if err != nil {
