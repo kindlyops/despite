@@ -37,7 +37,7 @@ image: | check-deps ## build & upload our go build container
 	docker push kindlyops/golang
 
 shasums:
-	@sha256sum bin/* > bin/SHA256_SUMS.txt
+	@sudo sh -c 'sha256sum bin/* > bin/SHA256_SUMS.txt'
 
 inner-prerelease:
 	@ghr -r despite --username $(GITHUB_USER) --token $(GITHUB_TOKEN) --replace --prerelease --debug pre-release bin/
