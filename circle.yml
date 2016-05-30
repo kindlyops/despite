@@ -29,7 +29,7 @@ deployment:
     commands:
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
       - docker push kindlyops/despite:latest
-      - make prelease
+      - make prerelease
   release:
     tag: /v[0-9]+(\.[0-9]+)*/
     owner: kindlyops
