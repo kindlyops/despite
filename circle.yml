@@ -20,7 +20,7 @@ dependencies:
 test:
   override:
     # this project uses the gb tool instead of `go test`
-    - gb test
+    - make test
 
 deployment:
   hub:
