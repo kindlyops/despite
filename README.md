@@ -8,6 +8,22 @@ heroku pg-extras project. Unlike pg-extras, this command will connect to any
 PG database, not just ones running on heroku. There are absolutely minimal
 binary dependencies, not even libpq.
 
+## Installation
+
+On OSX, you can use homebrew
+
+    brew tap kindlyops/tap
+    brew install despite
+
+On linux laptops, you can use linuxbrew
+
+    brew tap kindlyops/tap
+    brew install despite
+
+In server environments, you can copy the raw binary or use docker
+
+    docker pull kindlyops/despite
+
 ## building
 
 This application is compiled inside a Docker container that has the go
@@ -41,6 +57,8 @@ Once you have docker set up:
 * [x] add a Makefile that automatically gets the dependencies
       via homebrew or apt and go get, and has a make test target
 * [x] add docker compose support
+* [ ] compress released binaries and include shasums in upload
+* [ ] set up code coverage reporting via https://coveralls.io/github/kindlyops/despite
 * [ ] make an animated gif for the readme similar to https://github.com/tcnksm/ghr
 * [ ] set up a homebrew tap to make this easy to install on OSX
 * [ ] set up bash autocompletion

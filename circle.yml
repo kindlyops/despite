@@ -19,7 +19,6 @@ dependencies:
 
 test:
   override:
-    # this project uses the gb tool instead of `go test`
     - make test
 
 deployment:
@@ -38,7 +37,4 @@ deployment:
       - docker tag kindlyops/despite kindlyops/despite:$CIRCLE_TAG
       - docker push kindlyops/despite:$CIRCLE_TAG
       - make release
-
-
-# TODO upload releases to github
-# https://medium.com/@jgautheron/publish-your-golang-binaries-in-github-with-circleci-e0b64cb21bf8#.unwbi7kbj
+      - make homebrew

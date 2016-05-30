@@ -36,17 +36,28 @@ image: | check-deps ## build & upload our go build container
 	docker build -t kindlyops/golang build-image
 	docker push kindlyops/golang
 
+shasums:
+	@sha256sum bin/* > bin/SHA256_SUMS.txt
+
 inner-prerelease:
 	@ghr -r despite --username $(GITHUB_USER) --token $(GITHUB_TOKEN) --replace --prerelease --debug pre-release bin/
 
 inner-release:
 	@ghr -r despite --username $(GITHUB_USER) --token $(GITHUB_TOKEN) --debug $(CIRCLE_TAG) bin/
 
-prerelease: | check-deps ## Upload binraries to a github prerelease
+prerelease: shasums | check-deps
 	@docker-compose run -e GITHUB_TOKEN=$(GITHUB_TOKEN) -e GITHUB_USER=$(GITHUB_USER) -w /code build make inner-prerelease
 
-release: | check-deps ## Upload binaries to a github tagged release
+release: shasums | check-deps
 	@docker-compose run -e GITHUB_TOKEN=$(GITHUB_TOKEN) -e GITHUB_USER=$(GITHUB_USER) -e CIRCLE_TAG=$(CIRCLE_TAG) -w /code build make inner-release
+
+homebrew: | check-deps
+	linux_sha256 := $(shell sha256sum bin/despite-linux-amd64 | awk '{print $1;} )
+	darwin_sha256 := $(shell sha256sum bin/despite-darwin-amd64 | awk '{print $1;} )
+	@git clone git@github.com:kindlyops/homebrew-tap.git
+	@erb version=$(CIRCLE_TAG) linux_sha256=$(linux_sha256) darwin_sha256=$(darwin_sha256) packaging-templates/despite.rb.erb > homebrew-tap/despite.rb
+	@cd homebrew-tap && git commit -am "Releasing $(CIRCLE_TAG)" && git push origin master
+
 
 # cleverness from http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help: ## Show the help for this makefile

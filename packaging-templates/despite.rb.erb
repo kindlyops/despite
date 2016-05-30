@@ -1,0 +1,39 @@
+class Despite < Formula
+  desc "Swiss army knife for the harried operator https://www.kindlyops.com"
+  homepage "https://github.com/kindlyops/despite"
+  url "https://github.com/kindlyops/despite/releases/download/<%= version %>/despite-darwin-amd64"
+  version "<%= version %>"
+  sha256 "<%= darwin_sha256 %>"
+
+  if OS.linux?
+    if Hardware.is_64_bit?
+      url "https://github.com/kindlyops/despite/releases/download/<%= version %>/despite-linux-amd64"
+      sha256 "<%= linux_sha256 %>"
+    end
+  end
+
+  depends_on :arch => :intel
+
+  def install
+    if OS.linux?
+      bin.install 'despite-linux-amd64' => 'despite'
+    else
+      bin.install 'despite-darwin-amd64' => 'despite'
+    end
+  end
+
+  def caveats
+    msg = <<-'EOM'
+Brought to you by
+
+ _  ___           _ _        ___
+ | |/ (_)_ __   __| | |_   _ / _ \ _ __  ___
+ | ' /| | '_ \ / _` | | | | | | | | '_ \/ __|
+ | . \| | | | | (_| | | |_| | |_| | |_) \__ \
+ |_|\_\_|_| |_|\__,_|_|\__, |\___/| .__/|___/
+                         |___/      |_|
+use at your own risk.
+EOM
+  end
+
+end
