@@ -37,10 +37,10 @@ image: | check-deps ## build & upload our go build container
 	docker push kindlyops/golang
 
 inner-prerelease:
-	@ghr -r kindlyops/despite --username $(GITHUB_USER) --token $(GITHUB_TOKEN) --replace --prerelease --debug pre-release bin/
+	@ghr -r despite --username $(GITHUB_USER) --token $(GITHUB_TOKEN) --replace --prerelease --debug pre-release bin/
 
 inner-release:
-	@ghr -r kindlyops/despite --username $(GITHUB_USER) --token $(GITHUB_TOKEN) --debug $(CIRCLE_TAG) bin/
+	@ghr -r despite --username $(GITHUB_USER) --token $(GITHUB_TOKEN) --debug $(CIRCLE_TAG) bin/
 
 prerelease: | check-deps ## Upload binraries to a github prerelease
 	@docker-compose run -e GITHUB_TOKEN=$(GITHUB_TOKEN) -e GITHUB_USER=$(GITHUB_USER) -w /code build make inner-prerelease
