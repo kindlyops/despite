@@ -35,16 +35,15 @@ Once you have docker set up:
 
 * [x] learn how to make unit tests
 * [x] convert to compile with a build image
+* [x] set up circleci to publish docker image to docker hub
+* [x] set up circleci to publish binaries to github releases
+* [x] add notes on running via docker image
+* [x] add a Makefile that automatically gets the dependencies
+      via homebrew or apt and go get, and has a make test target
+* [x] add docker compose support
 * [ ] make an animated gif for the readme similar to https://github.com/tcnksm/ghr
 * [ ] set up a homebrew tap to make this easy to install on OSX
-* [ ] set up circleci to publish docker image to docker hub
-* [ ] set up circleci to publish binaries to github releases
-
 * [ ] set up bash autocompletion
-* [ ] add notes on running via docker image
-* [ ] add a Makefile that automatically gets the dependencies
-      via homebrew or apt and go get, and has a make test target
-* [ ] add docker compose support
 
 ## http server experiment
 
