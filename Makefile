@@ -55,7 +55,7 @@ homebrew: | check-deps
 	@git clone git@github.com:kindlyops/homebrew-tap.git
 	@erb version=$(CIRCLE_TAG) packaging-templates/despite.rb.erb > homebrew-tap/despite.rb
 	@git config --global user.name "CircleCI"
-	@git config --global user.email="statik@users.noreply.github.com"
+	@git config --global user.email "statik@users.noreply.github.com"
 	@cd homebrew-tap && git commit -am "Releasing $(CIRCLE_TAG)" && git push origin master
 
 
