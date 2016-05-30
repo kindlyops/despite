@@ -24,13 +24,21 @@ test:
     - make test
 
 deployment:
-  hub:
+  prerelease:
     branch: master
     commands:
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-      - docker push kindlyops/despite:$CIRCLE_BUILD_NUM
       - docker push kindlyops/despite:latest
-      - make ghrelease
+      - make prelease
+  release:
+    tag: /v[0-9]+(\.[0-9]+)*/
+    owner: kindlyops
+    commands:
+      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+      - docker tag kindlyops/despite kindlyops/despite:$CIRCLE_TAG
+      - docker push kindlyops/despite:$CIRCLE_TAG
+      - make release
+
 
 # TODO upload releases to github
 # https://medium.com/@jgautheron/publish-your-golang-binaries-in-github-with-circleci-e0b64cb21bf8#.unwbi7kbj

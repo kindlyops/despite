@@ -26,6 +26,9 @@ import (
 )
 
 var dburi string
+var buildstamp = "defined in linker flags"
+var githash = "defined at compile time"
+var tag = ""
 
 func tableSize(output io.Writer) error {
 	var (
@@ -82,7 +85,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "despite"
 	app.Usage = "One day this should do something"
-	app.Version = "0.0.1"
+	app.Version = fmt.Sprintf("%s compiled from %s on %s", tag, githash, buildstamp)
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:   "verbose, V",
