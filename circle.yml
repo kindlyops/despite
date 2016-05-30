@@ -16,7 +16,7 @@ dependencies:
     - env GOOS=windows GOARCH=amd64 make build
     - cp bin/* $CIRCLE_ARTIFACTS
     - docker build -t kindlyops/despite:$CIRCLE_BUILD_NUM .
-    - dockter tag kindlyops/despite:$CIRCLE_BUILD_NUM kindlyops/despite:latest
+    - docker tag kindlyops/despite:$CIRCLE_BUILD_NUM kindlyops/despite:latest
 
 test:
   override:
