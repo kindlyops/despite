@@ -1,8 +1,8 @@
 .DEFAULT_GOAL := help
 .PHONY: help test
-uname := $(shell uname -s)
 docker := $(shell command -v docker 2> /dev/null)
 docker-compose := $(shell command -v docker-compose 2> /dev/null)
+GOOS ?= $(shell uname -s | tr '[:upper:]' '[:lower:]')
 
 check-deps: ## Check if we have required dependencies
 ifndef docker
@@ -25,7 +25,7 @@ inner-test:
 # this target is hidden, only meant to be invoked inside the build container
 inner-build:
 	@echo GOOS=$(GOOS) GOARCH=$(GOARCH)
-	gb build -ldflags "-X main.tag $CIRCLE_TAG -X main.buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.githash=`git rev-parse HEAD`" all;
+	gb build -ldflags "-X main.tag=$(CIRCLE_TAG) -X main.buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.githash=`git rev-parse HEAD`" all;
 
 # the stuff to the right of the pipe symbol is order-only prerequisites
 build: | check-deps ## Compile using a docker build container
