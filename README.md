@@ -1,43 +1,45 @@
 # DESPITE
 [![CircleCI](https://circleci.com/gh/kindlyops/despite.svg?style=svg)](https://circleci.com/gh/kindlyops/despite)
 
-This project is named *despite* because I want to experiment with go and make
-a tool that is occasionally useful when working on ops stuff in random
-environments /despite/ being so overwhelmingly busy.
+Despite the pressure, self-doubt, hysteria, and rampant speculation that surrounds operational emergencies, we still need dependable tools to help us probe-sense-respond.
 
-The first thing this will have is some useful diagnostic commands ported from
+The first set of commands are some useful DB diagnostics ported from the
 heroku pg-extras project. Unlike pg-extras, this command will connect to any
 PG database, not just ones running on heroku. There are absolutely minimal
 binary dependencies, not even libpq.
 
 ## building
 
-You will need go 1.6 or later and the gb tool installed.
+This application is compiled inside a Docker container that has the go
+toolchain installed. Using a build container guarantees that we are all using
+the same toolchain to compile, and using the [gb](https://getgb.io/) build tool
+ensures that we have reproducible builds without import rewriting, depending
+on github uptime during compile, or setting up environment variables for paths.
 
-    go get github.com/constabulary/gb/...
+To check and see if you have docker available and set up
 
-    gb build all
-    bin/despite
+    docker -v
+    docker-compose -v
+    docker info
 
-## running tests
+If you don't have docker running, use the instructions at https://www.docker.com.
+At the time of writing, this is working fine with docker 1.11.1-beta13.1.
+Once you have docker set up:
 
-Unit tests require a postgres database available that you can connect to with
-
-    psql postgres://localhost/postgres?sslmode=disable
-
-The unit tests will create TEMP tables in this database, and run diagnostic
-queries. On OSX the easiest way to get this database is http://postgresapp.com/
-
-Once posgres is available, run tests using
-
-    gb test -v
+    make        # show the available make targets
+    make image  # build and upload the go toolchain container
+    make build  # compile, using docker build container
+    make test   # run tests (provisions postgres inside docker)
 
 ## TODO
 
 * [x] learn how to make unit tests
+* [x] convert to compile with a build image
+* [ ] make an animated gif for the readme similar to https://github.com/tcnksm/ghr
+* [ ] set up a homebrew tap to make this easy to install on OSX
 * [ ] set up circleci to publish docker image to docker hub
 * [ ] set up circleci to publish binaries to github releases
-* [ ] set up a homebrew tap to make this easy to install on OSX
+
 * [ ] set up bash autocompletion
 * [ ] add notes on running via docker image
 * [ ] add a Makefile that automatically gets the dependencies

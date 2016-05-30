@@ -1,5 +1,14 @@
 version: '2'
 services:
+  build:
+    image: kindlyops/golang
+    volumes:
+      - .:/code
+    links:
+      - db
+  db:
+    image: postgres:9.5
+
   web:
     build: .
     command: [despite, "--dburi=postgres://postgres@db/postgres?sslmode=disable", table-size]
@@ -10,8 +19,12 @@ services:
     links:
      - db
      - metrics
-  db:
-    image: postgres:9.5
+  dashboard:
+    image: grafana/grafana:3.0.4
+    links:
+      - metrics
+    ports:
+      - "3000:3000"
   metrics:
     image: prom/prometheus:0.19.1
     ports:
