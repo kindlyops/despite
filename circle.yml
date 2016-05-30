@@ -1,14 +1,13 @@
 machine:
   pre:
     - curl -sSL https://s3.amazonaws.com/circle-downloads/install-circleci-docker.sh | bash -s -- 1.10.0
+    - curl -L https://github.com/docker/compose/releases/download/1.7.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+    - chmod +x /usr/local/bin/docker-compose
   services:
     - docker
 
 dependencies:
   override:
-    # this project uses the gb tool instead of `go build`
-    - go get github.com/constabulary/gb/...
-    - go get github.com/tcnksm/ghr
     - GOOS=linux GOARCH=amd64 make build
     - GOOS=linux GOARCH=arm make build
     - GOOS=darwin GOARCH=amd64 make build
