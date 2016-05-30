@@ -10,10 +10,10 @@ machine:
 
 dependencies:
   override:
-    - GOOS=linux GOARCH=amd64 make build
-    - GOOS=linux GOARCH=arm make build
-    - GOOS=darwin GOARCH=amd64 make build
-    - GOOS=windows GOARCH=amd64 make build
+    - env GOOS=linux GOARCH=amd64 make build
+    - env GOOS=linux GOARCH=arm make build
+    - env GOOS=darwin GOARCH=amd64 make build
+    - env GOOS=windows GOARCH=amd64 make build
     - cp bin/* $CIRCLE_ARTIFACTS
     - docker build -t kindlyops/despite:$CIRCLE_BUILD_NUM .
 
