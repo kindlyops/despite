@@ -54,7 +54,9 @@ release: shasums | check-deps
 homebrew: | check-deps
 	@git clone git@github.com:kindlyops/homebrew-tap.git
 	@erb version=$(CIRCLE_TAG) packaging-templates/despite.rb.erb > homebrew-tap/despite.rb
-	@cd homebrew-tap && git commit -a -c user.name='CircleCI' -c user.email='statik@users.noreply.github.com' -m "Releasing $(CIRCLE_TAG)" && git push origin master
+	@git config --global user.name "CircleCI"
+	@git config --global user.email="statik@users.noreply.github.com"
+	@cd homebrew-tap && git commit -am "Releasing $(CIRCLE_TAG)" && git push origin master
 
 
 # cleverness from http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
