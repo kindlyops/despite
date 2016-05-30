@@ -37,7 +37,7 @@ image: | check-deps ## build & upload our go build container
 	docker push kindlyops/golang
 
 inner-release:
-	@ghr -r kindlyops/despite --token $GITHUB_TOKEN --replace --prerelease --debug pre-release bin/
+	@ghr -r kindlyops/despite --username $GITHUB_USER --token $GITHUB_TOKEN --replace --prerelease --debug pre-release bin/
 
 ghrelease: | check-deps ## Upload binraries to a github prerelease
 	@docker-compose run -e GITHUB_TOKEN=$(GITHUB_TOKEN) -w /code build make inner-release
