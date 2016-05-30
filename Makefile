@@ -36,6 +36,12 @@ image: | check-deps ## build & upload our go build container
 	docker build -t kindlyops/golang build-image
 	docker push kindlyops/golang
 
+inner-release:
+	@ghr -r kindlyops/despite --token $GITHUB_TOKEN --replace --prerelease --debug pre-release bin/
+
+ghrelease: | check-deps ## Upload binraries to a github prerelease
+	@docker-compose run -e GITHUB_TOKEN=$(GITHUB_TOKEN) -w /code build make inner-release
+
 # cleverness from http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help: ## Show the help for this makefile
 	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

@@ -30,6 +30,7 @@ deployment:
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
       - docker push kindlyops/despite:$CIRCLE_BUILD_NUM
       - docker push kindlyops/despite:latest
+      - make ghrelease
 
 # TODO upload releases to github
 # https://medium.com/@jgautheron/publish-your-golang-binaries-in-github-with-circleci-e0b64cb21bf8#.unwbi7kbj
