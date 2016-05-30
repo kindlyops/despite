@@ -16,6 +16,7 @@ dependencies:
     - env GOOS=windows GOARCH=amd64 make build
     - cp bin/* $CIRCLE_ARTIFACTS
     - docker build -t kindlyops/despite:$CIRCLE_BUILD_NUM .
+    - dockter tag kindlyops/despite:$CIRCLE_BUILD_NUM kindlyops/despite:latest
 
 test:
   override:
@@ -28,6 +29,7 @@ deployment:
     commands:
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
       - docker push kindlyops/despite:$CIRCLE_BUILD_NUM
+      - docker push kindlyops/despite:latest
 
 # TODO upload releases to github
 # https://medium.com/@jgautheron/publish-your-golang-binaries-in-github-with-circleci-e0b64cb21bf8#.unwbi7kbj

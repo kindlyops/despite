@@ -24,11 +24,12 @@ inner-test:
 
 # this target is hidden, only meant to be invoked inside the build container
 inner-build:
+	@echo GOOS=$(GOOS) GOARCH=$(GOARCH)
 	gb build all;
 
 # the stuff to the right of the pipe symbol is order-only prerequisites
 build: | check-deps ## Compile using a docker build container
-	@docker-compose run -w /code build make inner-build
+	@docker-compose run -e GOOS=$(GOOS) -e GOARCH=$(GOARCH) -w /code build make inner-build
 
 
 image: | check-deps ## build & upload our go build container
