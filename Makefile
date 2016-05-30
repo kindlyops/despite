@@ -52,10 +52,8 @@ release: shasums | check-deps
 	@docker-compose run -e GITHUB_TOKEN=$(GITHUB_TOKEN) -e GITHUB_USER=$(GITHUB_USER) -e CIRCLE_TAG=$(CIRCLE_TAG) -w /code build make inner-release
 
 homebrew: | check-deps
-	linux_sha256 := $(shell sha256sum bin/despite-linux-amd64 | awk '{print $1;} )
-	darwin_sha256 := $(shell sha256sum bin/despite-darwin-amd64 | awk '{print $1;} )
 	@git clone git@github.com:kindlyops/homebrew-tap.git
-	@erb version=$(CIRCLE_TAG) linux_sha256=$(linux_sha256) darwin_sha256=$(darwin_sha256) packaging-templates/despite.rb.erb > homebrew-tap/despite.rb
+	@erb version=$(CIRCLE_TAG) packaging-templates/despite.rb.erb > homebrew-tap/despite.rb
 	@cd homebrew-tap && git commit -am "Releasing $(CIRCLE_TAG)" && git push origin master
 
 
