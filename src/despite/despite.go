@@ -84,7 +84,7 @@ func tableSizeCmd(ctx *cli.Context) error {
 func main() {
 	app := cli.NewApp()
 	app.Name = "despite"
-	app.Usage = "One day this should do something"
+	app.Usage = "swiss army knife for the harried operator"
 	app.Version = fmt.Sprintf("%s compiled from %s on %s", tag, githash, buildstamp)
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
@@ -122,7 +122,7 @@ func main() {
 		},
 	}
 	app.Action = func(ctx *cli.Context) error {
-		fmt.Println("Wow I can't believe you ran this.")
+		fmt.Println("despite is a swiss army knife for the harried operator. -h for usage")
 
 		return cli.NewExitError("", ctx.Int("exit"))
 	}
