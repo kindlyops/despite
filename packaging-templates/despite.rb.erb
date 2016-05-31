@@ -1,5 +1,5 @@
-<% linux_sha256 = `sha256sum bin/despite-linux-amd64 | cut -d' ' -f1` %>
-<% darwin_sha256 = `sha256sum bin/despite-darwin-amd64 | cut -d' ' -f1` %>
+<% linux_sha256 = `sha256sum bin/despite-linux-amd64 | cut -d' ' -f1` -%>
+<% darwin_sha256 = `sha256sum bin/despite-darwin-amd64 | cut -d' ' -f1` -%>
 
 class Despite < Formula
   desc "Swiss army knife for the harried operator https://www.kindlyops.com"
