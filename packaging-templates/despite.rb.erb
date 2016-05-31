@@ -6,7 +6,7 @@ class Despite < Formula
   homepage "https://github.com/kindlyops/despite"
   url "https://github.com/kindlyops/despite/releases/download/<%= version %>/despite-darwin-amd64"
   version "<%= version %>"
-  sha256 <%= darwin_sha256.chomp %>
+  sha256 "<%= darwin_sha256.chomp %>"
 
   if OS.linux?
     if Hardware.is_64_bit?
