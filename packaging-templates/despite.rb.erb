@@ -1,17 +1,17 @@
-<% linux_sha256 = `sha256sum bin/despite-linux-amd64 | cut -d' ' -f1` -%>
-<% darwin_sha256 = `sha256sum bin/despite-darwin-amd64 | cut -d' ' -f1` -%>
+<% linux_sha256 = `sha256sum bin/despite-linux-amd64 | cut -d' ' -f1` %>
+<% darwin_sha256 = `sha256sum bin/despite-darwin-amd64 | cut -d' ' -f1` %>
 
 class Despite < Formula
   desc "Swiss army knife for the harried operator https://www.kindlyops.com"
   homepage "https://github.com/kindlyops/despite"
   url "https://github.com/kindlyops/despite/releases/download/<%= version %>/despite-darwin-amd64"
   version "<%= version %>"
-  sha256 "<%= darwin_sha256 %>"
+  sha256 <%= darwin_sha256.chomp %>
 
   if OS.linux?
     if Hardware.is_64_bit?
       url "https://github.com/kindlyops/despite/releases/download/<%= version %>/despite-linux-amd64"
-      sha256 "<%= linux_sha256 %>"
+      sha256 "<%= linux_sha256.chomp %>"
     end
   end
 
