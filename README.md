@@ -57,10 +57,11 @@ Once you have docker set up:
 * [x] add a Makefile that automatically gets the dependencies
       via homebrew or apt and go get, and has a make test target
 * [x] add docker compose support
-* [ ] compress released binaries and include shasums in upload
+* [x] set up a homebrew tap to make this easy to install on OSX
+* [x] include shasums in upload
+* [x] set up circleCI machine user for SSH
 * [ ] set up code coverage reporting via https://coveralls.io/github/kindlyops/despite
 * [ ] make an animated gif for the readme similar to https://github.com/tcnksm/ghr
-* [ ] set up a homebrew tap to make this easy to install on OSX
 * [ ] set up bash autocompletion
 
 ## http server experiment
