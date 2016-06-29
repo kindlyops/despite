@@ -1,11 +1,15 @@
 version: '2'
 services:
-  build:
+  build-go:
     image: kindlyops/golang
     volumes:
       - .:/code
     links:
       - db
+  build-node:
+    image: kindlyops/node
+    volumes:
+      - .:/code
   db:
     image: postgres:9.5
 

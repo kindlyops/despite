@@ -32,9 +32,11 @@ build: | check-deps ## Compile using a docker build container
 	@docker-compose run -e CIRCLE_TAG=$(CIRCLE_TAG) -e GOOS=$(GOOS) -e GOARCH=$(GOARCH) -w /code build make inner-build
 
 
-image: | check-deps ## build & upload our go build container
-	docker build -t kindlyops/golang build-image
+buildcontainer: | check-deps ## build & upload our go & npm build containers
+	docker build -t kindlyops/golang go-build-image
 	docker push kindlyops/golang
+	cd npm-build-image && docker build -t kindlyops/node .
+	docker push kindlyops/node
 
 shasums:
 	@sudo sh -c 'sha256sum bin/* > bin/SHA256_SUMS.txt'
