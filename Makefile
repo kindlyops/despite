@@ -16,7 +16,7 @@ endif
 # the stuff to the right of the pipe symbol is order-only prerequisites
 test: | check-deps ## Run the tests
 # run go container, and execute tests inside that container
-	@docker-compose run -w /code build make inner-test
+	@docker-compose run -w /code build-go make inner-test
 
 # this target is hidden, only meant to be invoked inside the build container
 inner-test:
@@ -29,10 +29,10 @@ inner-build:
 
 # the stuff to the right of the pipe symbol is order-only prerequisites
 build: | check-deps ## Compile using a docker build container
-	@docker-compose run -e CIRCLE_TAG=$(CIRCLE_TAG) -e GOOS=$(GOOS) -e GOARCH=$(GOARCH) -w /code build make inner-build
+	@docker-compose run -e CIRCLE_TAG=$(CIRCLE_TAG) -e GOOS=$(GOOS) -e GOARCH=$(GOARCH) -w /code build-go make inner-build
 
 
-buildcontainer: | check-deps ## build & upload our go & npm build containers
+build-container: | check-deps ## build & upload our go & npm build containers
 	docker build -t kindlyops/golang go-build-image
 	docker push kindlyops/golang
 	cd npm-build-image && docker build -t kindlyops/node .
@@ -48,10 +48,10 @@ inner-release:
 	@ghr -r despite --username $(GITHUB_USER) --token $(GITHUB_TOKEN) --debug $(CIRCLE_TAG) bin/
 
 prerelease: shasums | check-deps
-	@docker-compose run -e GITHUB_TOKEN=$(GITHUB_TOKEN) -e GITHUB_USER=$(GITHUB_USER) -w /code build make inner-prerelease
+	@docker-compose run -e GITHUB_TOKEN=$(GITHUB_TOKEN) -e GITHUB_USER=$(GITHUB_USER) -w /code build-go make inner-prerelease
 
 release: shasums | check-deps
-	@docker-compose run -e GITHUB_TOKEN=$(GITHUB_TOKEN) -e GITHUB_USER=$(GITHUB_USER) -e CIRCLE_TAG=$(CIRCLE_TAG) -w /code build make inner-release
+	@docker-compose run -e GITHUB_TOKEN=$(GITHUB_TOKEN) -e GITHUB_USER=$(GITHUB_USER) -e CIRCLE_TAG=$(CIRCLE_TAG) -w /code build-go make inner-release
 
 homebrew: | check-deps
 	@git clone git@github.com:kindlyops/homebrew-tap.git
