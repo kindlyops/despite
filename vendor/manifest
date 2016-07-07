@@ -8,6 +8,12 @@
 			"branch": "master"
 		},
 		{
+			"importpath": "github.com/mattn/go-runewidth",
+			"repository": "https://github.com/mattn/go-runewidth",
+			"revision": "d6bea18f789704b5f83375793155289da36a3c7f",
+			"branch": "master"
+		},
+		{
 			"importpath": "github.com/olekukonko/tablewriter",
 			"repository": "https://github.com/olekukonko/tablewriter",
 			"revision": "279fecc91ba77130f753d073259d7f9e246acdda",
