@@ -20,9 +20,9 @@ import (
 	"io"
 	"os"
 
-	"github.com/codegangsta/cli"
 	_ "github.com/lib/pq"
 	"github.com/olekukonko/tablewriter"
+	"github.com/urfave/cli"
 )
 
 var dburi string
