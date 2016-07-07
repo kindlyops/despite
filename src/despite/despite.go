@@ -81,6 +81,11 @@ func tableSizeCmd(ctx *cli.Context) error {
 	return nil
 }
 
+func serve(ctx *cli.Context) error {
+	fmt.Printf("TODO: make the web server listen on %#v\n", ctx.GlobalInt("port"))
+	return nil
+}
+
 func main() {
 	app := cli.NewApp()
 	app.Name = "despite"
@@ -99,6 +104,12 @@ func main() {
 			Usage:       "postgres://dbuser:dbpassword@hostname/dbname?sslmode=disable",
 			EnvVar:      "DESPITE_DBURI",
 			Destination: &dburi,
+		},
+		cli.IntFlag{
+			Name:   "port, p",
+			Value:  8000,
+			Usage:  "web server will listen on `PORT`",
+			EnvVar: "DESPITE_PORT",
 		},
 		cli.IntFlag{
 			Name:   "exit, e",
@@ -120,11 +131,17 @@ func main() {
 			Usage:   "print table sizes in descending order",
 			Action:  tableSizeCmd,
 		},
+		{
+			Name:    "serve",
+			Aliases: []string{"run"},
+			Usage:   "start the web server",
+			Action:  serve,
+		},
 	}
 	app.Action = func(ctx *cli.Context) error {
 		fmt.Println("despite is a swiss army knife for the harried operator. -h for usage")
 
-		return cli.NewExitError("", ctx.Int("exit"))
+		return cli.NewExitError("", ctx.GlobalInt("exit"))
 	}
 
 	app.Run(os.Args)
