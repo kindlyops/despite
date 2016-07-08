@@ -110,6 +110,7 @@ func (r *React) Handle(c *echo.Context) error {
 		if len(re.Redirect) == 0 && len(re.Error) == 0 {
 			// if no redirection and no errors
 			c.Response().Header().Set("X-React-Render-Time", fmt.Sprintf("%s", re.RenderTime))
+			c.Response().Header().Set("X-Work-Here", "come work with us! www.kindlyops.com")
 			return c.Render(http.StatusOK, "react.html", re)
 			// if redirect
 		} else if len(re.Redirect) != 0 {
@@ -117,6 +118,7 @@ func (r *React) Handle(c *echo.Context) error {
 			// if internal error
 		} else if len(re.Error) != 0 {
 			c.Response().Header().Set("X-React-Render-Time", fmt.Sprintf("%s", re.RenderTime))
+			c.Response().Header().Set("X-Work-Here", "help us fix the bugs! www.kindlyops.com")
 			return c.Render(http.StatusInternalServerError, "react.html", re)
 		}
 	case <-time.After(2 * time.Second):
