@@ -55,11 +55,15 @@ inner-bundle:
 
 # this target is hidden, only meant to be invoked inside the build container
 inner-test:
+	go env
 	go test -v despite
 
 # the stuff to the right of the pipe symbol is order-only prerequisites
-build: $(BUNDLE) $(BINDATA) | check-deps ## compile using xgo docker container
+xbuild: $(BUNDLE) $(BINDATA) | check-deps ## cross-compile using xgo in docker
 	xgo --targets=$(XGO_TARGETS) -ldflags "-X main.tag=$(CIRCLE_TAG) -X main.buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.githash=`git rev-parse HEAD`" $(GOPATH)/src/despite
+
+build: XGO_TARGETS=darwin-10.9/amd64
+build: xbuild ## build darwin/amd64 only (faster for local dev)
 
 build-container: | check-deps ## build & upload our go & npm build containers
 	docker build -t kindlyops/golang go-build-image

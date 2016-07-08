@@ -12,7 +12,7 @@ machine:
 
 dependencies:
   override:
-    - make build
+    - make xbuild
     - cp despite-* $CIRCLE_ARTIFACTS
     - docker build -t kindlyops/despite .
 
