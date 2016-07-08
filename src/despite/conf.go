@@ -47,7 +47,7 @@ commit: 0
 port: 8000
 title: Despite - swiss army knife for the harried operator
 api:
-  prefix: /api
+  prefix: /api/v1
 duktape:
   path: static/build/bundle.js
 `

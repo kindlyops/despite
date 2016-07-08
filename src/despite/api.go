@@ -14,11 +14,7 @@
 
 package main
 
-import (
-	"time"
-
-	"gopkg.in/labstack/echo.v1"
-)
+import "gopkg.in/labstack/echo.v1"
 
 // The API is not yet defined
 type API struct{}
@@ -26,12 +22,23 @@ type API struct{}
 // ConnectRoutes connects the routes
 func (api *API) ConnectRoutes(group *echo.Group) {
 	group.Get("/healthz", api.HealthzHandler)
+	group.Get("/conf", api.ConfigHandler)
 }
 
 // HealthzHandler reports a healthcheck for this app
 func (api *API) HealthzHandler(c *echo.Context) error {
 	app := c.Get("app").(*App)
-	<-time.After(time.Millisecond * 500) // TODO understand why this line
+
+	// if you need to fake connection latency
+	// <-time.After(time.Millisecond * 500)
+
+	c.JSON(200, app.Conf.Root)
+	return nil
+}
+
+// ConfigHandler exposes the config for this app
+func (api *API) ConfigHandler(c *echo.Context) error {
+	app := c.Get("app").(*App)
 	c.JSON(200, app.Conf.Root)
 	return nil
 }

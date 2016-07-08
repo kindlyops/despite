@@ -124,7 +124,7 @@ func (r *React) Handle(c *echo.Context) error {
 		r.drop(vm)
 		return c.Render(http.StatusInternalServerError, "react.html", Resp{
 			UUID:  UUID.String(),
-			Error: "Render timeout after 2 seconds",
+			Error: fmt.Sprintf("Render timeout on %s after 2 seconds", c.Request().URL.String()),
 		})
 	}
 	return nil

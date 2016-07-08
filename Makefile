@@ -11,12 +11,10 @@ BINDATA_FLAGS   = -pkg=main -prefix=src/despite/data
 BUNDLE          = src/despite/data/static/build/bundle.js
 APP             = $(shell find src/client -type f)
 NODE_BIN        = $(shell npm bin)
-THIS_MAKEFILE_PATH:=$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
-THIS_DIR:=$(shell cd $(dir $(THIS_MAKEFILE_PATH));pwd)
-THIS_MAKEFILE:=$(notdir $(THIS_MAKEFILE_PATH))
+THIS_FILE_PATH :=$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
+THIS_DIR       :=$(shell cd $(dir $(THIS_FILE_PATH));pwd)
+THIS_MAKEFILE  :=$(notdir $(THIS_FILE_PATH))
 GOPATH          = $(THIS_DIR)
-CGO_ENABLED     = 1
-GO15VENDOREXPERIMENT=1
 XGO_TARGETS     = linux/amd64,linux/arm-7,darwin-10.9/*,windows-6.0/*
 
 clean:
