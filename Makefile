@@ -1,8 +1,13 @@
-.DEFAULT_GOAL := help
-.PHONY: help test
-docker := $(shell command -v docker 2> /dev/null)
+.DEFAULT_GOAL  := help
+.PHONY         : help test
+docker         := $(shell command -v docker 2> /dev/null)
 docker-compose := $(shell command -v docker-compose 2> /dev/null)
-GOOS ?= $(shell uname -s | tr '[:upper:]' '[:lower:]')
+GOOS           ?= $(shell uname -s | tr '[:upper:]' '[:lower:]')
+BINDATA         = src/despite/bindata.go
+BINDATA_FLAGS   = -pkg=main -prefix=src/despite/data
+BUNDLE          = src/despite/data/static/build/bundle.js
+APP             = $(shell find src/client -type f)
+NODE_BIN        = $(shell npm bin)
 
 check-deps: ## Check if we have required dependencies
 ifndef docker
@@ -19,16 +24,28 @@ test: | check-deps ## Run the tests
 	@docker-compose run -w /code build-go make inner-test
 
 # this target is hidden, only meant to be invoked inside the build container
+$(BINDATA):
+	go-bindata $(BINDATA_FLAGS) -o=$@ src/despite/data/...
+
+$(BUNDLE): $(APP)
+	@docker-compose run -w /code build-node make inner-bundle
+
+# this target is hidden, only meant to be invoked inside the build container
+inner-bundle:
+	@npm install
+	@$(NODE_BIN)/webpack --progress --colors --bail
+
+# this target is hidden, only meant to be invoked inside the build container
 inner-test:
 	gb test -v
 
 # this target is hidden, only meant to be invoked inside the build container
-inner-build:
+inner-build: $(BINDATA)
 	@echo GOOS=$(GOOS) GOARCH=$(GOARCH)
 	gb build -ldflags "-X main.tag=$(CIRCLE_TAG) -X main.buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.githash=`git rev-parse HEAD`" all;
 
 # the stuff to the right of the pipe symbol is order-only prerequisites
-build: | check-deps ## Compile using a docker build container
+build: $(BUNDLE) | check-deps ## Compile using a docker build container
 	@docker-compose run -e CIRCLE_TAG=$(CIRCLE_TAG) -e GOOS=$(GOOS) -e GOARCH=$(GOARCH) -w /code build-go make inner-build
 
 

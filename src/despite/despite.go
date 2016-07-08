@@ -29,6 +29,8 @@ var dburi string
 var buildstamp = "defined in linker flags"
 var githash = "defined at compile time"
 var tag = ""
+var debug = false
+var port = 8000
 
 func tableSize(output io.Writer) error {
 	var (
@@ -81,9 +83,12 @@ func tableSizeCmd(ctx *cli.Context) error {
 	return nil
 }
 
-func serve(ctx *cli.Context) error {
-	fmt.Printf("TODO: make the web server listen on %#v\n", ctx.GlobalInt("port"))
-	return nil
+func serve(ctx *cli.Context) {
+	fmt.Printf("Listening on %#v\n", port)
+	app := NewApp(AppOptions{
+	// see server/app.go:150
+	})
+	app.Run()
 }
 
 func main() {
@@ -105,11 +110,18 @@ func main() {
 			EnvVar:      "DESPITE_DBURI",
 			Destination: &dburi,
 		},
+		cli.BoolFlag{
+			Name:        "debug, d",
+			Usage:       "run in debug mode",
+			EnvVar:      "DESPITE_DEBUG",
+			Destination: &debug,
+		},
 		cli.IntFlag{
-			Name:   "port, p",
-			Value:  8000,
-			Usage:  "web server will listen on `PORT`",
-			EnvVar: "DESPITE_PORT",
+			Name:        "port, p",
+			Value:       8000,
+			Usage:       "web server will listen on `PORT`",
+			EnvVar:      "DESPITE_PORT",
+			Destination: &port,
 		},
 		cli.IntFlag{
 			Name:   "exit, e",
