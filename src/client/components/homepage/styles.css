@@ -7,22 +7,22 @@
 }
 
 .link {
-  color: $yellow;
+  color: $aqua;
   position: relative;
   &:before {
     content: '';
     position: absolute;
     height: px(2);
     bottom: px(0);
-    background-color: $yellow;
+    background-color: $aqua;
     right: px(-1);
     left: @right;
   }
 
   &:hover {
-    color: $red;
+    color: $gold;
     &:before {
-      background-color: $red;
+      background-color: $gold;
     }
   }
 }
