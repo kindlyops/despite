@@ -79,7 +79,7 @@ func NewApp(opts ...AppOptions) *App {
 	// Set config variables delivered from despite.go: app.Run
 	// Variables as defined in conf.go
 	conf.Set("debug", debug)
-	conf.Set("commitHash", githash)
+	conf.Set("commit", githash)
 	conf.Set("port", port)
 
 	// Parse environ variables for defined in config constants
