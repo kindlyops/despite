@@ -264,14 +264,9 @@ func (ci *ctxIndex) add(ctx *Context) unsafe.Pointer {
 	}
 	ci.RUnlock()
 
-	ci.Lock()
-	for ptr, ctxPtr := range ci.ctxs {
-		if ctxPtr == ctx {
-			ci.Unlock()
-			return ptr
-		}
-	}
 	ptr := C.malloc(1)
+
+	ci.Lock()
 	ci.ctxs[ptr] = ctx
 	ci.Unlock()
 

@@ -64,6 +64,12 @@
 			"branch": "master"
 		},
 		{
+			"importpath": "github.com/olebedev/config",
+			"repository": "https://github.com/olebedev/config",
+			"revision": "dd1049a3738432dfc49417e2ae5bd97e132ecac6",
+			"branch": "master"
+		},
+		{
 			"importpath": "github.com/olekukonko/tablewriter",
 			"repository": "https://github.com/olekukonko/tablewriter",
 			"revision": "279fecc91ba77130f753d073259d7f9e246acdda",
@@ -124,13 +130,13 @@
 		{
 			"importpath": "gopkg.in/olebedev/go-duktape-fetch.v2",
 			"repository": "https://gopkg.in/olebedev/go-duktape-fetch.v2",
-			"revision": "a4ba37699f8bae499586df39f367460ab7566f1b",
+			"revision": "634a7ea4ba91939a6dc4d0274bd053b02aed234b",
 			"branch": "v2"
 		},
 		{
 			"importpath": "gopkg.in/olebedev/go-duktape.v2",
 			"repository": "https://gopkg.in/olebedev/go-duktape.v2",
-			"revision": "c92a17342465568ab68d13a05afe370f6b75147a",
+      "revision": "1c5e9d0fb82296a24a63ab68b682c5b4d7a45cca",
 			"branch": "v2"
 		},
 		{
