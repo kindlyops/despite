@@ -6,3 +6,4 @@
 /despite-linux-*
 /despite-windows-*
 /src/despite/data/static/build/
+/src/despite/bindata.go

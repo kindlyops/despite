@@ -2,6 +2,7 @@
 .PHONY         : help test clean
 docker         := $(shell command -v docker 2> /dev/null)
 docker-compose := $(shell command -v docker-compose 2> /dev/null)
+xgo            := $(shell command -v xgo 2> /dev/null)
 GOOS           ?= $(shell uname -s | tr '[:upper:]' '[:lower:]')
 CC             ?= o64-clang
 CXX            ?= o64-clang++
@@ -19,11 +20,14 @@ GO15VENDOREXPERIMENT=1
 XGO_TARGETS     = linux/amd64,linux/arm-7,darwin-10.9/*,windows-6.0/*
 
 clean:
-	@git clean -x
-	@rm $(BINDATA)
-	@rm src/despite/data/static/build/*
+	@git clean -x -f
+	@rm -f $(BINDATA)
+	@rm -f src/despite/data/static/build/*
 
 check-deps: ## Check if we have required dependencies
+ifndef xgo
+	@echo "I couldn't find the xgo command, install with go get github.com/karalabe/xgo"
+endif
 ifndef docker
 	@echo "I couldn't find the docker command, install from www.docker.com"
 endif
