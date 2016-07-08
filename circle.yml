@@ -6,6 +6,7 @@ machine:
     - sudo mv docker-compose /usr/local/bin/
     - sudo chmod +x /usr/local/bin/docker-compose
     - go get github.com/karalabe/xgo
+    - go get -u github.com/jteeuwen/go-bindata/...
   services:
     - docker
 
