@@ -2,3 +2,6 @@
 /pkg
 /bin
 /node_modules
+/despite-darwin-*
+/despite-linux-*
+/despite-windows-*
