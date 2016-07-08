@@ -1,13 +1,27 @@
 .DEFAULT_GOAL  := help
-.PHONY         : help test
+.PHONY         : help test clean
 docker         := $(shell command -v docker 2> /dev/null)
 docker-compose := $(shell command -v docker-compose 2> /dev/null)
 GOOS           ?= $(shell uname -s | tr '[:upper:]' '[:lower:]')
+CC             ?= o64-clang
+CXX            ?= o64-clang++
 BINDATA         = src/despite/bindata.go
 BINDATA_FLAGS   = -pkg=main -prefix=src/despite/data
 BUNDLE          = src/despite/data/static/build/bundle.js
 APP             = $(shell find src/client -type f)
 NODE_BIN        = $(shell npm bin)
+THIS_MAKEFILE_PATH:=$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
+THIS_DIR:=$(shell cd $(dir $(THIS_MAKEFILE_PATH));pwd)
+THIS_MAKEFILE:=$(notdir $(THIS_MAKEFILE_PATH))
+GOPATH          = $(THIS_DIR)
+CGO_ENABLED     = 1
+GO15VENDOREXPERIMENT=1
+XGO_TARGETS     = linux/amd64,linux/arm-7,darwin-10.9/*,windows-6.0/*
+
+clean:
+	@git clean -x
+	@rm $(BINDATA)
+	@rm src/despite/data/static/build/*
 
 check-deps: ## Check if we have required dependencies
 ifndef docker
@@ -21,7 +35,7 @@ endif
 # the stuff to the right of the pipe symbol is order-only prerequisites
 test: | check-deps ## Run the tests
 # run go container, and execute tests inside that container
-	@docker-compose run -w /code build-go make inner-test
+	@docker-compose run -e GOPATH=$(GOPATH) -w /code build-go make inner-test
 
 # this target is hidden, only meant to be invoked inside the build container
 $(BINDATA):
@@ -37,17 +51,11 @@ inner-bundle:
 
 # this target is hidden, only meant to be invoked inside the build container
 inner-test:
-	gb test -v
-
-# this target is hidden, only meant to be invoked inside the build container
-inner-build: $(BINDATA)
-	@echo GOOS=$(GOOS) GOARCH=$(GOARCH)
-	gb build -ldflags "-X main.tag=$(CIRCLE_TAG) -X main.buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.githash=`git rev-parse HEAD`" all;
+	go test -v despite
 
 # the stuff to the right of the pipe symbol is order-only prerequisites
-build: $(BUNDLE) | check-deps ## Compile using a docker build container
-	@docker-compose run -e CIRCLE_TAG=$(CIRCLE_TAG) -e GOOS=$(GOOS) -e GOARCH=$(GOARCH) -w /code build-go make inner-build
-
+build: $(BUNDLE) | check-deps ## compile using xgo docker container
+	xgo --targets=$(XGO_TARGETS) -ldflags "main.tag=$(CIRCLE_TAG) -X main.buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.githash=`git rev-parse HEAD`" $(GOPATH)/src/despite
 
 build-container: | check-deps ## build & upload our go & npm build containers
 	docker build -t kindlyops/golang go-build-image
@@ -59,16 +67,16 @@ shasums:
 	@sudo sh -c 'sha256sum bin/* > bin/SHA256_SUMS.txt'
 
 inner-prerelease:
-	@ghr -r despite --username $(GITHUB_USER) --token $(GITHUB_TOKEN) --replace --prerelease --debug pre-release bin/
+	@ghr -r despite --username $(GITHUB_USER) --token $(GITHUB_TOKEN) --replace --prerelease --debug pre-release $(CIRCLE_ARTIFACTS)
 
 inner-release:
-	@ghr -r despite --username $(GITHUB_USER) --token $(GITHUB_TOKEN) --debug $(CIRCLE_TAG) bin/
+	@ghr -r despite --username $(GITHUB_USER) --token $(GITHUB_TOKEN) --debug $(CIRCLE_TAG) $(CIRCLE_ARTIFACTS)
 
 prerelease: shasums | check-deps
-	@docker-compose run -e GITHUB_TOKEN=$(GITHUB_TOKEN) -e GITHUB_USER=$(GITHUB_USER) -w /code build-go make inner-prerelease
+	@docker-compose run -e GITHUB_TOKEN=$(GITHUB_TOKEN) -e GITHUB_USER=$(GITHUB_USER) -e CIRCLE_ARTIFACTS=$(CIRCLE_ARTIFACTS) -w /code build-go make inner-prerelease
 
 release: shasums | check-deps
-	@docker-compose run -e GITHUB_TOKEN=$(GITHUB_TOKEN) -e GITHUB_USER=$(GITHUB_USER) -e CIRCLE_TAG=$(CIRCLE_TAG) -w /code build-go make inner-release
+	@docker-compose run -e GITHUB_TOKEN=$(GITHUB_TOKEN) -e GITHUB_USER=$(GITHUB_USER) -e CIRCLE_TAG=$(CIRCLE_TAG) -e CIRCLE_ARTIFACTS=$(CIRCLE_ARTIFACTS) -w /code build-go make inner-release
 
 homebrew: | check-deps
 	@git clone git@github.com:kindlyops/homebrew-tap.git

@@ -5,3 +5,4 @@
 /despite-darwin-*
 /despite-linux-*
 /despite-windows-*
+/src/despite/data/static/build/
