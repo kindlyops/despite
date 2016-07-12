@@ -5,16 +5,17 @@ machine:
     - sudo curl -L https://github.com/docker/compose/releases/download/1.7.1/docker-compose-Linux-x86_64 > docker-compose
     - sudo mv docker-compose /usr/local/bin/
     - sudo chmod +x /usr/local/bin/docker-compose
+    - go get github.com/karalabe/xgo
+    - go get -u github.com/jteeuwen/go-bindata/...
+    - go get -u github.com/Masterminds/glide/...
   services:
     - docker
 
 dependencies:
   override:
-    - env GOOS=linux GOARCH=amd64 make build
-    - env GOOS=linux GOARCH=arm make build
-    - env GOOS=darwin GOARCH=amd64 make build
-    - env GOOS=windows GOARCH=amd64 make build
-    - cp bin/* $CIRCLE_ARTIFACTS
+    - cd src && glide install
+    - make xbuild
+    - cp despite-* $CIRCLE_ARTIFACTS
     - docker build -t kindlyops/despite .
 
 test:

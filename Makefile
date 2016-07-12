@@ -1,10 +1,31 @@
-.DEFAULT_GOAL := help
-.PHONY: help test
-docker := $(shell command -v docker 2> /dev/null)
+.DEFAULT_GOAL  := help
+.PHONY         : help test clean
+docker         := $(shell command -v docker 2> /dev/null)
 docker-compose := $(shell command -v docker-compose 2> /dev/null)
-GOOS ?= $(shell uname -s | tr '[:upper:]' '[:lower:]')
+xgo            := $(shell command -v xgo 2> /dev/null)
+GOOS           ?= $(shell uname -s | tr '[:upper:]' '[:lower:]')
+CC             ?= o64-clang
+CXX            ?= o64-clang++
+BINDATA         = src/despite/bindata.go
+BINDATA_FLAGS   = -pkg=main -prefix=src/despite/data
+BUNDLE          = src/despite/data/static/build/bundle.js
+APP             = $(shell find src/client -type f)
+NODE_BIN        = $(shell npm bin)
+THIS_FILE_PATH :=$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
+THIS_DIR       :=$(shell cd $(dir $(THIS_FILE_PATH));pwd)
+THIS_MAKEFILE  :=$(notdir $(THIS_FILE_PATH))
+GOPATH          = $(THIS_DIR)
+XGO_TARGETS     = linux/amd64,linux/arm-7,darwin-10.9/*,windows-6.0/*
+
+clean:
+	@git clean -x -f
+	@rm -f $(BINDATA)
+	@rm -f src/despite/data/static/build/*
 
 check-deps: ## Check if we have required dependencies
+ifndef xgo
+	@echo "I couldn't find the xgo command, install with go get github.com/karalabe/xgo"
+endif
 ifndef docker
 	@echo "I couldn't find the docker command, install from www.docker.com"
 endif
@@ -16,40 +37,52 @@ endif
 # the stuff to the right of the pipe symbol is order-only prerequisites
 test: | check-deps ## Run the tests
 # run go container, and execute tests inside that container
-	@docker-compose run -w /code build make inner-test
+	@docker-compose run -e GOPATH=$(GOPATH) -w /code build-go make inner-test
 
 # this target is hidden, only meant to be invoked inside the build container
-inner-test:
-	gb test -v
+$(BINDATA):
+	go-bindata $(BINDATA_FLAGS) -o=$@ src/despite/data/...
+
+$(BUNDLE): $(APP)
+	@docker-compose run -w /code build-node make inner-bundle
 
 # this target is hidden, only meant to be invoked inside the build container
-inner-build:
-	@echo GOOS=$(GOOS) GOARCH=$(GOARCH)
-	gb build -ldflags "-X main.tag=$(CIRCLE_TAG) -X main.buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.githash=`git rev-parse HEAD`" all;
+inner-bundle:
+	@npm install
+	@$(NODE_BIN)/webpack --progress --colors --bail
+
+# this target is hidden, only meant to be invoked inside the build container
+inner-test: $(BUNDLE) $(BINDATA)
+	go env
+	go test -v despite
 
 # the stuff to the right of the pipe symbol is order-only prerequisites
-build: | check-deps ## Compile using a docker build container
-	@docker-compose run -e CIRCLE_TAG=$(CIRCLE_TAG) -e GOOS=$(GOOS) -e GOARCH=$(GOARCH) -w /code build make inner-build
+xbuild: $(BUNDLE) $(BINDATA) | check-deps ## cross-compile using xgo in docker
+	xgo --targets=$(XGO_TARGETS) -ldflags "-X main.tag=$(CIRCLE_TAG) -X main.buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.githash=`git rev-parse HEAD`" $(GOPATH)/src/despite
 
+build: XGO_TARGETS=darwin-10.9/amd64
+build: xbuild ## build darwin/amd64 only (faster for local dev)
 
-image: | check-deps ## build & upload our go build container
-	docker build -t kindlyops/golang build-image
+build-container: | check-deps ## build & upload our go & npm build containers
+	docker build -t kindlyops/golang go-build-image
 	docker push kindlyops/golang
+	cd npm-build-image && docker build -t kindlyops/node .
+	docker push kindlyops/node
 
 shasums:
 	@sudo sh -c 'sha256sum bin/* > bin/SHA256_SUMS.txt'
 
 inner-prerelease:
-	@ghr -r despite --username $(GITHUB_USER) --token $(GITHUB_TOKEN) --replace --prerelease --debug pre-release bin/
+	@ghr -r despite --username $(GITHUB_USER) --token $(GITHUB_TOKEN) --replace --prerelease --debug pre-release $(CIRCLE_ARTIFACTS)
 
 inner-release:
-	@ghr -r despite --username $(GITHUB_USER) --token $(GITHUB_TOKEN) --debug $(CIRCLE_TAG) bin/
+	@ghr -r despite --username $(GITHUB_USER) --token $(GITHUB_TOKEN) --debug $(CIRCLE_TAG) $(CIRCLE_ARTIFACTS)
 
 prerelease: shasums | check-deps
-	@docker-compose run -e GITHUB_TOKEN=$(GITHUB_TOKEN) -e GITHUB_USER=$(GITHUB_USER) -w /code build make inner-prerelease
+	@docker-compose run -e GITHUB_TOKEN=$(GITHUB_TOKEN) -e GITHUB_USER=$(GITHUB_USER) -e CIRCLE_ARTIFACTS=$(CIRCLE_ARTIFACTS) -w /code build-go make inner-prerelease
 
 release: shasums | check-deps
-	@docker-compose run -e GITHUB_TOKEN=$(GITHUB_TOKEN) -e GITHUB_USER=$(GITHUB_USER) -e CIRCLE_TAG=$(CIRCLE_TAG) -w /code build make inner-release
+	@docker-compose run -e GITHUB_TOKEN=$(GITHUB_TOKEN) -e GITHUB_USER=$(GITHUB_USER) -e CIRCLE_TAG=$(CIRCLE_TAG) -e CIRCLE_ARTIFACTS=$(CIRCLE_ARTIFACTS) -w /code build-go make inner-release
 
 homebrew: | check-deps
 	@git clone git@github.com:kindlyops/homebrew-tap.git

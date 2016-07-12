@@ -1,3 +1,9 @@
 /debug
 /pkg
 /bin
+/node_modules
+/despite-darwin-*
+/despite-linux-*
+/despite-windows-*
+/src/despite/data/static/build/
+/src/despite/bindata.go

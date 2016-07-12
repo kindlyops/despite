@@ -20,15 +20,17 @@ import (
 	"io"
 	"os"
 
-	"github.com/codegangsta/cli"
 	_ "github.com/lib/pq"
 	"github.com/olekukonko/tablewriter"
+	"github.com/urfave/cli"
 )
 
 var dburi string
 var buildstamp = "defined in linker flags"
 var githash = "defined at compile time"
 var tag = ""
+var debug = false
+var port = 8000
 
 func tableSize(output io.Writer) error {
 	var (
@@ -81,6 +83,14 @@ func tableSizeCmd(ctx *cli.Context) error {
 	return nil
 }
 
+func serve(ctx *cli.Context) {
+	fmt.Printf("Listening on %#v\n", port)
+	app := NewApp(AppOptions{
+	// see server/app.go:150
+	})
+	app.Run()
+}
+
 func main() {
 	app := cli.NewApp()
 	app.Name = "despite"
@@ -99,6 +109,19 @@ func main() {
 			Usage:       "postgres://dbuser:dbpassword@hostname/dbname?sslmode=disable",
 			EnvVar:      "DESPITE_DBURI",
 			Destination: &dburi,
+		},
+		cli.BoolFlag{
+			Name:        "debug, d",
+			Usage:       "run in debug mode",
+			EnvVar:      "DESPITE_DEBUG",
+			Destination: &debug,
+		},
+		cli.IntFlag{
+			Name:        "port, p",
+			Value:       8000,
+			Usage:       "web server will listen on `PORT`",
+			EnvVar:      "DESPITE_PORT",
+			Destination: &port,
 		},
 		cli.IntFlag{
 			Name:   "exit, e",
@@ -120,11 +143,17 @@ func main() {
 			Usage:   "print table sizes in descending order",
 			Action:  tableSizeCmd,
 		},
+		{
+			Name:    "serve",
+			Aliases: []string{"run"},
+			Usage:   "start the web server",
+			Action:  serve,
+		},
 	}
 	app.Action = func(ctx *cli.Context) error {
 		fmt.Println("despite is a swiss army knife for the harried operator. -h for usage")
 
-		return cli.NewExitError("", ctx.Int("exit"))
+		return cli.NewExitError("", ctx.GlobalInt("exit"))
 	}
 
 	app.Run(os.Args)
