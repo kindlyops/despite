@@ -8,7 +8,7 @@ machine:
     - go get github.com/karalabe/xgo
     - go get -u github.com/jteeuwen/go-bindata/...
     - go get -u github.com/Masterminds/glide/...
-    - glide install
+    - cd src; glide install
   services:
     - docker
 
