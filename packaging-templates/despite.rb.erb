@@ -6,13 +6,13 @@
 class Despite < Formula
   desc "Swiss army knife for the harried operator https://www.kindlyops.com"
   homepage "https://github.com/kindlyops/despite"
-  url "https://github.com/kindlyops/despite/releases/download/<%= version %>/#{darwin_name}"
+  url "https://github.com/kindlyops/despite/releases/download/<%= version %>/<%= darwin_name %>"
   version "<%= version %>"
   sha256 "<%= darwin_sha256.chomp %>"
 
   if OS.linux?
     if Hardware.is_64_bit?
-      url "https://github.com/kindlyops/despite/releases/download/<%= version %>/#{linux_name}"
+      url "https://github.com/kindlyops/despite/releases/download/<%= version %>/<%= linux_name %>"
       sha256 "<%= linux_sha256.chomp %>"
     end
   end
@@ -21,9 +21,9 @@ class Despite < Formula
 
   def install
     if OS.linux?
-      bin.install linux_name => 'despite'
+      bin.install <%= linux_name %> => 'despite'
     else
-      bin.install darwin_name => 'despite'
+      bin.install <%= darwin_name %> => 'despite'
     end
   end
 
