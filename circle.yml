@@ -7,7 +7,7 @@ machine:
     - sudo chmod +x /usr/local/bin/docker-compose
     - go get github.com/karalabe/xgo
     - go get -u github.com/jteeuwen/go-bindata/...
-    - curl https://glide.sh/get | sh
+    - go get -u github.com/Masterminds/glide/...
     - glide install
   services:
     - docker
