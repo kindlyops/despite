@@ -43,7 +43,6 @@ At the time of writing, this is working fine with docker 1.11.1-beta13.1.
 Once you have docker set up:
 
     make        # show the available make targets
-    make image  # build and upload the go toolchain container
     make build  # compile, using docker build container
     make test   # run tests (provisions postgres inside docker)
 
@@ -51,36 +50,8 @@ This shows what it looks like when you successfully run the tests.
 
 ![](doc/despite-make-test.gif)
 
-## TODO
+## Contributing
 
-* [x] learn how to make unit tests
-* [x] convert to compile with a build image
-* [x] set up circleci to publish docker image to docker hub
-* [x] set up circleci to publish binaries to github releases
-* [x] add notes on running via docker image
-* [x] add a Makefile that automatically gets the dependencies
-      via homebrew or apt and go get, and has a make test target
-* [x] add docker compose support
-* [x] set up a homebrew tap to make this easy to install on OSX
-* [x] include shasums in upload
-* [x] set up circleCI machine user for SSH
-* [x] make an animated gif for the readme similar to https://github.com/tcnksm/ghr
-* [ ] set up code coverage reporting via https://coveralls.io/github/kindlyops/despite
-* [ ] set up bash autocompletion
-
-## http server experiment
-
-* [ ] add a serve command that runs HTTP server using
-      https://github.com/gocraft/web and exposes commands
-* [ ] instrument the http server with https://github.com/gocraft/health
-* [ ] experiment with calling into PostgreSQL
-      http://www.cybertec.at/2016/05/beating-uber-with-a-postgresql-prototype/
-* [ ] publish application metrics into prometheus
-      https://prometheus.io/
-* [ ] visualize application metrics with grafana
-      https://prometheus.io/docs/visualization/grafana/
-* [ ] set up vagrant with mesos-playa and some frameworks
-  * kubernetes
-  * chronos
-  * marathon
-* [ ] set up vagrant with CoreOS and kubernetes
+We have a list of issues that outline changes, features, or experiments
+that we want to do, and are starting to set up a help-wanted label.
+Feel free to open a pull request to discuss a proposed change.
