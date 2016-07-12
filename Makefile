@@ -52,7 +52,7 @@ inner-bundle:
 	@$(NODE_BIN)/webpack --progress --colors --bail
 
 # this target is hidden, only meant to be invoked inside the build container
-inner-test:
+inner-test: $(BUNDLE) $(BINDATA)
 	go env
 	go test -v despite
 
