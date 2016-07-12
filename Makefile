@@ -73,16 +73,16 @@ shasums:
 	@sudo sh -c 'sha256sum bin/* > bin/SHA256_SUMS.txt'
 
 inner-prerelease:
-	@ghr -r despite --username $(GITHUB_USER) --token $(GITHUB_TOKEN) --replace --prerelease --debug pre-release $(CIRCLE_ARTIFACTS)
+	@ghr -r despite --username $(GITHUB_USER) --token $(GITHUB_TOKEN) --replace --prerelease --debug pre-release bin
 
 inner-release:
-	@ghr -r despite --username $(GITHUB_USER) --token $(GITHUB_TOKEN) --debug $(CIRCLE_TAG) $(CIRCLE_ARTIFACTS)
+	@ghr -r despite --username $(GITHUB_USER) --token $(GITHUB_TOKEN) --debug $(CIRCLE_TAG) bin
 
 prerelease: shasums | check-deps
-	@docker-compose run -e GITHUB_TOKEN=$(GITHUB_TOKEN) -e GITHUB_USER=$(GITHUB_USER) -e CIRCLE_ARTIFACTS=$(CIRCLE_ARTIFACTS) -w /code build-go make inner-prerelease
+	@docker-compose run -e GITHUB_TOKEN=$(GITHUB_TOKEN) -e GITHUB_USER=$(GITHUB_USER) -w /code build-go make inner-prerelease
 
 release: shasums | check-deps
-	@docker-compose run -e GITHUB_TOKEN=$(GITHUB_TOKEN) -e GITHUB_USER=$(GITHUB_USER) -e CIRCLE_TAG=$(CIRCLE_TAG) -e CIRCLE_ARTIFACTS=$(CIRCLE_ARTIFACTS) -w /code build-go make inner-release
+	@docker-compose run -e GITHUB_TOKEN=$(GITHUB_TOKEN) -e GITHUB_USER=$(GITHUB_USER) -e CIRCLE_TAG=$(CIRCLE_TAG) -w /code build-go make inner-release
 
 homebrew: | check-deps
 	@git clone git@github.com:kindlyops/homebrew-tap.git
