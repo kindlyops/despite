@@ -8,12 +8,12 @@ machine:
     - go get github.com/karalabe/xgo
     - go get -u github.com/jteeuwen/go-bindata/...
     - go get -u github.com/Masterminds/glide/...
-    - cd src; glide install
   services:
     - docker
 
 dependencies:
   override:
+    - cd src && glide install
     - make xbuild
     - cp despite-* $CIRCLE_ARTIFACTS
     - docker build -t kindlyops/despite .
