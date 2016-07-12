@@ -15,7 +15,9 @@ dependencies:
   override:
     - cd src && glide install
     - make xbuild
+    - mkdir bin/
     - cp despite-* $CIRCLE_ARTIFACTS
+    - cp despite-* bin/
     - docker build -t kindlyops/despite .
 
 test:
