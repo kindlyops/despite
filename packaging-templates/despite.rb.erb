@@ -21,9 +21,9 @@ class Despite < Formula
 
   def install
     if OS.linux?
-      bin.install <%= linux_name %> => 'despite'
+      bin.install "<%= linux_name %>" => 'despite'
     else
-      bin.install <%= darwin_name %> => 'despite'
+      bin.install "<%= darwin_name %>" => 'despite'
     end
   end
 
