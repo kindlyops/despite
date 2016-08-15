@@ -2,18 +2,21 @@ version: '2'
 services:
   build-xgo:
     image: karalabe/xgo-latest
+    working_dir: /code
     volumes:
       - .:/code
     links:
       - db
   build-go:
     image: kindlyops/golang
+    working_dir: /code
     volumes:
       - .:/code
     links:
       - db
   build-node:
     image: kindlyops/node
+    working_dir: /code
     volumes:
       - .:/code
   db:
@@ -24,6 +27,7 @@ services:
     command: [despite, "--dburi=postgres://postgres@db/postgres?sslmode=disable", table-size]
     ports:
      - "5000:5000"
+    working_dir: /code
     volumes:
      - .:/code
     links:
