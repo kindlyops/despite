@@ -20,6 +20,7 @@ XGO_TARGETS     = linux/amd64,linux/arm-7,darwin-10.9/*,windows-6.0/*
 clean:
 	@git clean -x -f
 	@rm -f $(BINDATA)
+	@rm -rf node_modules
 	@rm -f src/despite/data/static/build/*
 
 check-deps: ## Check if we have required dependencies
@@ -37,14 +38,14 @@ endif
 # the stuff to the right of the pipe symbol is order-only prerequisites
 test: | check-deps ## Run the tests
 # run go container, and execute tests inside that container
-	@docker-compose run -e GOPATH=$(GOPATH) -w /code build-go make inner-test
+	@docker-compose run -e GOPATH=$(GOPATH) build-go make inner-test
 
 # this target is hidden, only meant to be invoked inside the build container
 $(BINDATA):
 	go-bindata $(BINDATA_FLAGS) -o=$@ src/despite/data/...
 
 $(BUNDLE): $(APP)
-	@docker-compose run -w /code build-node make inner-bundle
+	@docker-compose run build-node make inner-bundle
 
 # this target is hidden, only meant to be invoked inside the build container
 inner-bundle:
@@ -79,10 +80,10 @@ inner-release:
 	@ghr -r despite --username $(GITHUB_USER) --token $(GITHUB_TOKEN) --debug $(CIRCLE_TAG) bin
 
 prerelease: shasums | check-deps
-	@docker-compose run -e GITHUB_TOKEN=$(GITHUB_TOKEN) -e GITHUB_USER=$(GITHUB_USER) -w /code build-go make inner-prerelease
+	@docker-compose run -e GITHUB_TOKEN=$(GITHUB_TOKEN) -e GITHUB_USER=$(GITHUB_USER) build-go make inner-prerelease
 
 release: shasums | check-deps
-	@docker-compose run -e GITHUB_TOKEN=$(GITHUB_TOKEN) -e GITHUB_USER=$(GITHUB_USER) -e CIRCLE_TAG=$(CIRCLE_TAG) -w /code build-go make inner-release
+	@docker-compose run -e GITHUB_TOKEN=$(GITHUB_TOKEN) -e GITHUB_USER=$(GITHUB_USER) -e CIRCLE_TAG=$(CIRCLE_TAG) build-go make inner-release
 
 homebrew: | check-deps
 	@git clone git@github.com:kindlyops/homebrew-tap.git
