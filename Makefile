@@ -2,10 +2,7 @@
 .PHONY         : help test clean
 docker         := $(shell command -v docker 2> /dev/null)
 docker-compose := $(shell command -v docker-compose 2> /dev/null)
-xgo            := $(shell command -v xgo 2> /dev/null)
 GOOS           ?= $(shell uname -s | tr '[:upper:]' '[:lower:]')
-CC             ?= o64-clang
-CXX            ?= o64-clang++
 BINDATA         = src/despite/bindata.go
 BINDATA_FLAGS   = -pkg=main -prefix=src/despite/data
 BUNDLE          = src/despite/data/static/build/bundle.js
@@ -24,9 +21,6 @@ clean:
 	@rm -f src/despite/data/static/build/*
 
 check-deps: ## Check if we have required dependencies
-ifndef xgo
-	@echo "I couldn't find the xgo command, install with go get github.com/karalabe/xgo"
-endif
 ifndef docker
 	@echo "I couldn't find the docker command, install from www.docker.com"
 endif
@@ -57,12 +51,13 @@ inner-test: $(BUNDLE) $(BINDATA)
 	go env
 	go test -v despite
 
-# the stuff to the right of the pipe symbol is order-only prerequisites
-xbuild: $(BUNDLE) $(BINDATA) | check-deps ## cross-compile using xgo in docker
-	xgo --targets=$(XGO_TARGETS) -ldflags "-X main.tag=$(CIRCLE_TAG) -X main.buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.githash=`git rev-parse HEAD`" $(GOPATH)/src/despite
+# this target is hidden, only meant to be invoked inside the build container
+inner-build: $(BINDATA)
+	@echo GOOS=$(GOOS) GOARCH=$(GOARCH)
+	go build -ldflags "-X main.tag=$(CIRCLE_TAG) -X main.buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.githash=`git rev-parse HEAD`" all;
 
-build: XGO_TARGETS=darwin-10.9/amd64
-build: xbuild ## build darwin/amd64 only (faster for local dev)
+build: $(BUNDLE) | check-deps ## Compile using a docker build container
+	@docker-compose run -e CIRCLE_TAG=$(CIRCLE_TAG) -e GOOS=$(GOOS) -e GOARCH=$(GOARCH) build-go make inner-build
 
 build-container: | check-deps ## build & upload our go & npm build containers
 	docker build -t kindlyops/golang go-build-image

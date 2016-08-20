@@ -39,6 +39,7 @@ import (
 	"html/template"
 	"io"
 	"net/http"
+	"time"
 
 	"github.com/elazarl/go-bindata-assetfs"
 	"github.com/itsjamie/go-bindata-templates"
@@ -54,7 +55,6 @@ import (
 type App struct {
 	Engine *echo.Echo
 	Conf   *config.Config
-	React  *React
 	API    *API
 }
 
@@ -100,11 +100,6 @@ func NewApp(opts ...AppOptions) *App {
 		Conf:   conf,
 		Engine: engine,
 		API:    &API{},
-		React: NewReact(
-			conf.UString("duktape.path"),
-			conf.UBool("debug"),
-			engine,
-		),
 	}
 
 	// Use the precompiled embedded templates
@@ -144,8 +139,7 @@ func NewApp(opts ...AppOptions) *App {
 		AssetInfo: AssetInfo,
 	})
 
-	// Serve static via bindata and handle via react app
-	// in case where static file was not found
+	// Serve static via bindata
 	app.Engine.Use(func(h echo.HandlerFunc) echo.HandlerFunc {
 		return func(c *echo.Context) error {
 			// execute echo handlers chain
@@ -158,7 +152,10 @@ func NewApp(opts ...AppOptions) *App {
 					fileServerHandler.ServeHTTP(c.Response(), c.Request())
 					return nil
 				}
-				return app.React.Handle(c)
+				c.Response().Header().Set("X-Work-Here", "come work with us! www.kindlyops.com")
+				return c.Render(http.StatusOK, "react.html", Resp{
+					UUID: c.Get("uuid").(*uuid.UUID).String(),
+				})
 			}
 			// Move further if err is not `Not Found`
 			return err
@@ -166,6 +163,22 @@ func NewApp(opts ...AppOptions) *App {
 	})
 
 	return app
+}
+
+// Resp is a struct for convenient
+// react app Response parsing.
+// Feel free to add any other keys to this struct
+// and return value for this key at ecmascript side.
+// keep it in sync with: src/despite/client/router/toString.js:23
+type Resp struct {
+	UUID       string        `json:"uuid"`
+	Error      string        `json:"error"`
+	Redirect   string        `json:"redirect"`
+	App        string        `json:"app"`
+	Title      string        `json:"title"`
+	Meta       string        `json:"meta"`
+	Initial    string        `json:"initial"`
+	RenderTime time.Duration `json:"-"`
 }
 
 // Run runs the app
