@@ -101,3 +101,4 @@ import:
 - package: github.com/xordataexchange/crypt
   subpackages:
   - config
+- package: github.com/inconshreveable/mousetrap
