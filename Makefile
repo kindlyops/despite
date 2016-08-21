@@ -7,7 +7,7 @@ BINDATA         = src/despite/bindata.go
 BINDATA_FLAGS   = -pkg=main -prefix=src/despite/data
 BUNDLE          = src/despite/data/static/build/bundle.js
 APP             = $(shell find src/client -type f)
-NODE_BIN        = $(shell npm bin)
+NODE_BIN        = $(shell npm bin --loglevel silent)
 THIS_FILE_PATH :=$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
 THIS_DIR       :=$(shell cd $(dir $(THIS_FILE_PATH));pwd)
 THIS_MAKEFILE  :=$(notdir $(THIS_FILE_PATH))
@@ -17,7 +17,6 @@ XGO_TARGETS     = linux/amd64,linux/arm-7,darwin-10.9/*,windows-6.0/*
 clean:
 	@git clean -x -f
 	@rm -f $(BINDATA)
-	@rm -rf node_modules
 	@rm -f src/despite/data/static/build/*
 
 check-deps: ## Check if we have required dependencies
@@ -43,8 +42,7 @@ $(BUNDLE): $(APP)
 
 # this target is hidden, only meant to be invoked inside the build container
 inner-bundle:
-	@npm install
-	@$(NODE_BIN)/webpack --progress --colors --bail
+	$(NODE_BIN)/webpack --progress --colors --bail --config=webpack.config.js
 
 # this target is hidden, only meant to be invoked inside the build container
 inner-test: $(BUNDLE) $(BINDATA)

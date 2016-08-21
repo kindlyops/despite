@@ -1,7 +1,7 @@
 FROM        node:6.2.2
 MAINTAINER  Kindly Ops, LLC <support@kindlyops.com>
-ENV location /node
+ENV location /code
 RUN mkdir $location
 WORKDIR ${location}
-ADD package.json $location
-RUN npm install -g
+ADD package.json npm-shrinkwrap.json $location/
+RUN npm install

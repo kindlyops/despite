@@ -12,6 +12,7 @@ services:
     working_dir: /code
     volumes:
       - .:/code
+      - /code/node_modules
   db:
     image: postgres:9.5
 
