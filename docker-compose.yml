@@ -1,12 +1,5 @@
 version: '2'
 services:
-  build-xgo:
-    image: karalabe/xgo-latest
-    working_dir: /code
-    volumes:
-      - .:/code
-    links:
-      - db
   build-go:
     image: kindlyops/golang
     working_dir: /code
@@ -19,6 +12,7 @@ services:
     working_dir: /code
     volumes:
       - .:/code
+      - /code/node_modules
   db:
     image: postgres:9.5
 

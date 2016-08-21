@@ -2,8 +2,8 @@
 /pkg
 /bin
 /node_modules
-/despite-darwin-*
-/despite-linux-*
-/despite-windows-*
+/despite_darwin_*
+/despite_linux_*
+/despite_windows_*
 /src/despite/data/static/build/
 /src/despite/bindata.go

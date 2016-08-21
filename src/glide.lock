@@ -1,76 +1,127 @@
-hash: bba360f9e8189250f11edf7aca3bc3decda66e39d7767c09dc92d7d6c9b735b6
-updated: 2016-07-08T08:48:30.649016474-04:00
+hash: afe65283768a93095776258feaa96817fe496b81b1867965871385a81730d256
+updated: 2016-08-19T23:49:15.19448112-04:00
 imports:
+- name: github.com/armon/consul-api
+  version: 49db083e3389af1103a8c5737c3f6fb7cccd4d99
+- name: github.com/BurntSushi/toml
+  version: ""
+- name: github.com/coreos/go-etcd
+  version: ""
+  subpackages:
+  - etcd
+- name: github.com/cpuguy83/go-md2man
+  version: ""
+  subpackages:
+  - md2man
 - name: github.com/elazarl/go-bindata-assetfs
-  version: 57eb5e1fc594ad4b0b1dbea7b286d299e0cb43c2
+  version: ""
   repo: https://github.com/elazarl/go-bindata-assetfs
+- name: github.com/fsnotify/fsnotify
+  version: ""
+- name: github.com/hashicorp/hcl
+  version: 49db083e3389af1103a8c5737c3f6fb7cccd4d99
+- name: github.com/inconshreveable/mousetrap
+  version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/itsjamie/go-bindata-templates
-  version: 65d795d0c74021e19b2ebadf3c83c01a8290a405
+  version: ""
   repo: https://github.com/itsjamie/go-bindata-templates
+- name: github.com/kr/fs
+  version: 49db083e3389af1103a8c5737c3f6fb7cccd4d99
 - name: github.com/labstack/gommon
-  version: 722aa12d41c236ce78ff48eac1cafe0107ecdc9d
+  version: ""
   repo: https://github.com/labstack/gommon
   subpackages:
   - color
   - log
 - name: github.com/lib/pq
-  version: ee1442bda7bd1b6a84e913bdb421cb1874ec629d
+  version: ""
   repo: https://github.com/lib/pq
   subpackages:
   - oid
+- name: github.com/magiconair/properties
+  version: ""
 - name: github.com/mattn/go-colorable
-  version: 9056b7a9f2d1f2d96498d6d146acd1f9d5ed3d59
+  version: ""
   repo: https://github.com/mattn/go-colorable
 - name: github.com/mattn/go-isatty
-  version: 56b76bdf51f7708750eac80fa38b952bb9f32639
+  version: ""
   repo: https://github.com/mattn/go-isatty
 - name: github.com/mattn/go-runewidth
-  version: d6bea18f789704b5f83375793155289da36a3c7f
+  version: ""
   repo: https://github.com/mattn/go-runewidth
+- name: github.com/mitchellh/mapstructure
+  version: 49db083e3389af1103a8c5737c3f6fb7cccd4d99
 - name: github.com/moul/http2curl
-  version: b1479103caacaa39319f75e7f57fc545287fca0d
+  version: ""
   repo: https://github.com/moul/http2curl
 - name: github.com/nu7hatch/gouuid
-  version: 179d4d0c4d8d407a32af483c2354df1d2c91e6c3
+  version: ""
   repo: https://github.com/nu7hatch/gouuid
 - name: github.com/olebedev/config
-  version: dd1049a3738432dfc49417e2ae5bd97e132ecac6
+  version: ""
   repo: https://github.com/olebedev/config
 - name: github.com/olekukonko/tablewriter
-  version: 279fecc91ba77130f753d073259d7f9e246acdda
+  version: ""
   repo: https://github.com/olekukonko/tablewriter
 - name: github.com/parnurzeal/gorequest
-  version: 6e8ad4ebdee4bec2934ed5afaaa1c7b877832a17
+  version: ""
   repo: https://github.com/parnurzeal/gorequest
+- name: github.com/pkg/errors
+  version: ""
+- name: github.com/pkg/sftp
+  version: 49db083e3389af1103a8c5737c3f6fb7cccd4d99
+- name: github.com/russross/blackfriday
+  version: ""
+- name: github.com/shurcooL/sanitized_anchor_name
+  version: 49db083e3389af1103a8c5737c3f6fb7cccd4d99
+- name: github.com/spf13/afero
+  version: 49db083e3389af1103a8c5737c3f6fb7cccd4d99
+- name: github.com/spf13/cast
+  version: 49db083e3389af1103a8c5737c3f6fb7cccd4d99
+- name: github.com/spf13/jwalterweatherman
+  version: 49db083e3389af1103a8c5737c3f6fb7cccd4d99
+- name: github.com/spf13/pflag
+  version: 49db083e3389af1103a8c5737c3f6fb7cccd4d99
+- name: github.com/spf13/viper
+  version: 49db083e3389af1103a8c5737c3f6fb7cccd4d99
 - name: github.com/urfave/cli
-  version: 1efa31f08b9333f1bd4882d61f9d668a70cd902e
+  version: ""
   repo: https://github.com/urfave/cli
 - name: github.com/valyala/fasttemplate
-  version: 3b874956e03f1636d171bda64b130f9135f42cff
+  version: ""
   repo: https://github.com/valyala/fasttemplate
+- name: github.com/xordataexchange/crypt
+  version: 49db083e3389af1103a8c5737c3f6fb7cccd4d99
+  subpackages:
+  - config
+- name: golang.org/x/crypto
+  version: 49db083e3389af1103a8c5737c3f6fb7cccd4d99
+  subpackages:
+  - ssh/terminal
+  - openpgp
 - name: golang.org/x/net
-  version: 7864c9eef811cd4e2387a4d17eaf985e412b5032
+  version: ""
   repo: https://go.googlesource.com/net
   subpackages:
   - context
   - publicsuffix
   - websocket
+  - http2
 - name: golang.org/x/sys
-  version: a408501be4d17ee978c04a618e7a1b22af058c0e
+  version: 49db083e3389af1103a8c5737c3f6fb7cccd4d99
   subpackages:
   - unix
+- name: golang.org/x/text
+  version: 49db083e3389af1103a8c5737c3f6fb7cccd4d99
+  subpackages:
+  - transform
+  - encoding/htmlindex
 - name: gopkg.in/labstack/echo.v1
-  version: 5789bde991cc5c41536e4fd82cc0107e7cd3d0eb
+  version: ""
   repo: https://gopkg.in/labstack/echo.v1
   subpackages:
   - middleware
-- name: gopkg.in/olebedev/go-duktape-fetch.v2
-  version: 634a7ea4ba91939a6dc4d0274bd053b02aed234b
-  repo: https://gopkg.in/olebedev/go-duktape-fetch.v2
-- name: gopkg.in/olebedev/go-duktape.v2
-  version: c92a17342465568ab68d13a05afe370f6b75147a
-  repo: https://gopkg.in/olebedev/go-duktape.v2
 - name: gopkg.in/yaml.v2
-  version: a83829b6f1293c91addabc89d0571c246397bbf4
+  version: ""
   repo: https://gopkg.in/yaml.v2
 testImports: []
