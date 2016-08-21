@@ -3,6 +3,7 @@
 docker         := $(shell command -v docker 2> /dev/null)
 docker-compose := $(shell command -v docker-compose 2> /dev/null)
 GOOS           ?= $(shell uname -s | tr '[:upper:]' '[:lower:]')
+OSARCH          = "linux/amd64 darwin/amd64 windows/amd64 linux/arm64"
 BINDATA         = src/despite/bindata.go
 BINDATA_FLAGS   = -pkg=main -prefix=src/despite/data
 BUNDLE          = src/despite/data/static/build/bundle.js
@@ -12,7 +13,6 @@ THIS_FILE_PATH :=$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
 THIS_DIR       :=$(shell cd $(dir $(THIS_FILE_PATH));pwd)
 THIS_MAKEFILE  :=$(notdir $(THIS_FILE_PATH))
 GOPATH          = $(THIS_DIR)
-XGO_TARGETS     = linux/amd64,linux/arm-7,darwin-10.9/*,windows-6.0/*
 
 clean:
 	@git clean -x -f
@@ -51,11 +51,11 @@ inner-test: $(BUNDLE) $(BINDATA)
 
 # this target is hidden, only meant to be invoked inside the build container
 inner-build: $(BINDATA)
-	@echo GOOS=$(GOOS) GOARCH=$(GOARCH)
-	go build -ldflags "-X main.tag=$(CIRCLE_TAG) -X main.buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.githash=`git rev-parse HEAD`" all;
+	@echo GOPATH= $(GOPATH) GOOS=$(GOOS) GOARCH=$(GOARCH) OSARCH=$(OSARCH)
+	gox -parallel 4 -osarch $(OSARCH) -ldflags "-X main.tag=$(CIRCLE_TAG) -X main.buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.githash=`git rev-parse HEAD`" despite;
 
 build: $(BUNDLE) | check-deps ## Compile using a docker build container
-	@docker-compose run -e CIRCLE_TAG=$(CIRCLE_TAG) -e GOOS=$(GOOS) -e GOARCH=$(GOARCH) build-go make inner-build
+	@docker-compose run -e CIRCLE_TAG=$(CIRCLE_TAG) build-go make inner-build
 
 build-container: | check-deps ## build & upload our go & npm build containers
 	docker build -t kindlyops/golang go-build-image
