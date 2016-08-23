@@ -38,8 +38,8 @@ To check and see if you have docker available and set up
     docker-compose -v
     docker info
 
-If you don't have docker running, use the instructions at https://www.docker.com.
-At the time of writing, this is working fine with docker 1.11.1-beta13.1.
+If you don't have docker running, use the instructions at https://docs.docker.com/docker-for-mac/.
+At the time of writing, this is working fine with docker 1.12.
 Once you have docker set up:
 
     make        # show the available make targets
